@@ -18,6 +18,7 @@
 #include "hr_algo_debug.h"
 #include "hr_sampling.h"
 #include "hr_preproc.h"
+#include "hr_sqi.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,7 +37,8 @@ struct hr_algo_ctx {
 
     /* --- Module sub-contexts (appended in implementation order) --- */
     hr_preproc_ctx_t    preproc;    /* M2 */
-    /* M3–M8 sub-contexts will be appended here by their modules.    */
+    hr_sqi_ctx_t        sqi;        /* M3 */
+    /* M4–M8 sub-contexts will be appended here by their modules.    */
 };
 
 #ifdef __cplusplus

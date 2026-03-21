@@ -29,8 +29,12 @@ typedef struct {
 
     /* --- SQI & channel selection (M3) --- */
     struct {
-        float sqi_good_threshold;   /* SQI "good" threshold       (default 0.6) */
-        float sqi_poor_threshold;   /* SQI "poor" threshold       (default 0.3) */
+        float sqi_good_threshold;   /* SQI "good" threshold       (default 0.6)  */
+        float sqi_poor_threshold;   /* SQI "poor" threshold       (default 0.3)  */
+        float switch_margin;        /* Min SQI advantage to trigger main_ch
+                                       switch (O11 hysteresis)    (default 0.05) */
+        uint8_t switch_hold_count;  /* Consecutive cycles candidate must exceed
+                                       current main_ch before switch (default 3) */
     } sqi;
 
     /* --- Motion detection (M4) --- */
