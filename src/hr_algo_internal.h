@@ -17,6 +17,7 @@
 #include "hr_algo_params.h"
 #include "hr_algo_debug.h"
 #include "hr_sampling.h"
+#include "hr_preproc.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,7 +34,9 @@ struct hr_algo_ctx {
     hr_output_t         output;
     hr_debug_frame_t    debug;
 
-    /* M2–M8 sub-contexts will be appended here by their modules.    */
+    /* --- Module sub-contexts (appended in implementation order) --- */
+    hr_preproc_ctx_t    preproc;    /* M2 */
+    /* M3–M8 sub-contexts will be appended here by their modules.    */
 };
 
 #ifdef __cplusplus

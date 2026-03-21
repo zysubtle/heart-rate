@@ -42,6 +42,18 @@ static int _tf_fail = 0;
 
 #define ASSERT_FALSE(cond) ASSERT_TRUE(!(cond))
 
+#define ASSERT_FLOAT_NEAR(a, b, tol) do {                              \
+    double _fa = (double)(a);                                          \
+    double _fb = (double)(b);                                          \
+    double _diff = (_fa > _fb) ? (_fa - _fb) : (_fb - _fa);           \
+    if (_diff > (double)(tol)) {                                       \
+        printf("    ASSERT FAIL [%s:%d]: |%s - %s| <= %s  "           \
+               "(%.8g vs %.8g, diff %.8g)\n",                          \
+               __FILE__, __LINE__, #a, #b, #tol, _fa, _fb, _diff);    \
+        return 1;                                                      \
+    }                                                                  \
+} while (0)
+
 #define ASSERT_INT_EQ(a, b) do {                                       \
     long long _va = (long long)(a);                                    \
     long long _vb = (long long)(b);                                    \
