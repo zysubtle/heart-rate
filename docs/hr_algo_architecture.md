@@ -68,6 +68,16 @@
 | `include/hr_algo_params.h` | 参数统一入口 | Public |
 | `include/hr_algo_debug.h` | 调试日志结构 | Public |
 
+### 2.2.1 内部共享头文件
+
+| 文件 | 内容 | 可见性 |
+|------|------|--------|
+| `src/hr_algo_internal.h` | `hr_algo_ctx_t` 完整定义（嵌入各模块子上下文） | Internal (仅 `src/` 内部) |
+
+`hr_algo_ctx_t` 在 `include/hr_algo_api.h` 中为前向声明（opaque），
+完整定义仅在 `src/hr_algo_internal.h` 中，外部调用者不可见。
+各模块实现时在此文件尾部追加自身子上下文字段。
+
 ### 2.3 可见性规则
 
 - 外部调用者只需包含 `include/hr_algo_api.h`
@@ -432,16 +442,16 @@ const hr_debug_frame_t*hr_algo_get_debug(const hr_algo_ctx_t *ctx);
 | # | 问题 | 推荐默认方案 | 定稿时机 |
 |---|------|-------------|----------|
 | O1 | FFT 长度（200 vs 256 补零） | 256 补零 | M6 前 |
-| O2 | SQI 子指标拆分 | 信噪比 + 波形周期性 | M3 前 |
+| O2 | SQI 子指标拆分 | **已定稿 (M3)**：periodicity (ACF) + peak_regularity (inter-peak CV)，权重 0.6/0.4 | ~~M3 前~~ 已实现 |
 | O3 | confidence 计算公式 | 加权线性组合 | M7/M9 前 |
 | O4 | score 归一化方式 | 各方法内部归一化到 [0,1] | M6 前 |
 | O5 | pred candidate 策略 | 上一次 TRACK 稳定输出 | M6 前 |
 | O6 | MAC 算法选择 | NLMS | M5 前 |
 | O7 | HOLDOVER confidence 递减策略 | 每周期减 10 | M8 前 |
-| O8 | 滤波器设计 | 2 阶 IIR Butterworth | M2 前 |
+| O8 | 滤波器设计 | **已定稿 (M2)**：2 阶 IIR Butterworth (DF2T biquad)，block-stateless + DC warm-up | ~~M2 前~~ 已实现 |
 | O9 | ACC 运动分类指标 | 三轴能量 + 主频 + 周期性 | M4 前 |
 | O10 | 日志输出机制 | RAM ring buffer | 集成前 |
-| O11 | main_ch 切换迟滞 | 连续 N 周期备选 SQI 优于主通道 | M3 前 |
+| O11 | main_ch 切换迟滞 | **已定稿 (M3)**：switch_margin + switch_hold_count 参数化迟滞，已入 hr_params_t.sqi | ~~M3 前~~ 已实现 |
 | O12 | 融合策略 | 最高 score + 历史一致性 | M7 前 |
 | O13 | flags 位域分配 | 逐步分配 | 各模块实现时 |
 | O14 | 构建系统 | CMake | 首个模块前 |
