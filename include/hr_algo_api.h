@@ -12,6 +12,7 @@
 #include "hr_algo_types.h"
 #include "hr_algo_params.h"
 #include "hr_algo_debug.h"
+#include <stddef.h>        /* size_t for hr_algo_ctx_sizeof */
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,6 +51,27 @@ const hr_output_t *hr_algo_get_output(const hr_algo_ctx_t *ctx);
 
 /** Get latest debug frame (valid after hr_algo_process_1s). */
 const hr_debug_frame_t *hr_algo_get_debug(const hr_algo_ctx_t *ctx);
+
+/**
+ * Return sizeof(hr_algo_ctx_t) for external allocation.
+ *
+ * hr_algo_ctx_t is an opaque type (incomplete in this header).
+ * External callers need this to allocate ctx storage without
+ * including internal headers:
+ *
+ *   #include <stdint.h>
+ *   static uint8_t ctx_buf[HR_ALGO_CTX_MAX_SIZE];
+ *   hr_algo_ctx_t *ctx = (hr_algo_ctx_t *)ctx_buf;
+ *
+ * Or at runtime:
+ *   size_t sz = hr_algo_ctx_sizeof();
+ *   hr_algo_ctx_t *ctx = (hr_algo_ctx_t *)my_alloc(sz);
+ *
+ * Alignment: the returned size accounts for the struct's natural
+ * alignment.  Callers using static buffers should ensure the buffer
+ * is aligned to at least _Alignof(max_align_t) or 8 bytes.
+ */
+size_t hr_algo_ctx_sizeof(void);
 
 #ifdef __cplusplus
 }

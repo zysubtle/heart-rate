@@ -441,20 +441,20 @@ const hr_debug_frame_t*hr_algo_get_debug(const hr_algo_ctx_t *ctx);
 
 | # | 问题 | 推荐默认方案 | 定稿时机 |
 |---|------|-------------|----------|
-| O1 | FFT 长度（200 vs 256 补零） | 256 补零 | M6 前 |
+| O1 | FFT 长度（200 vs 256 补零） | **已定稿 (M6)**：Goertzel selective DFT，200 点数据 + 256 点隐式零填充 | ~~M6 前~~ 已实现 |
 | O2 | SQI 子指标拆分 | **已定稿 (M3)**：periodicity (ACF) + peak_regularity (inter-peak CV)，权重 0.6/0.4 | ~~M3 前~~ 已实现 |
-| O3 | confidence 计算公式 | 加权线性组合 | M7/M9 前 |
-| O4 | score 归一化方式 | 各方法内部归一化到 [0,1] | M6 前 |
-| O5 | pred candidate 策略 | 上一次 TRACK 稳定输出 | M6 前 |
-| O6 | MAC 算法选择 | NLMS | M5 前 |
-| O7 | HOLDOVER confidence 递减策略 | 每周期减 10 | M8 前 |
+| O3 | confidence 计算公式 | **已定稿 (M9)**：TRACK 加权线性组合 (SQI 0.30 + score 0.35 + consistency 0.20 + motion 0.15)；HOLDOVER 每周期 -10；REACQUIRE 同 TRACK 但 cap 60 | ~~M7/M9 前~~ 已实现 |
+| O4 | score 归一化方式 | **已定稿 (M6)**：各方法内部归一化到 [0,1]，含 SQI/motion 调制 | ~~M6 前~~ 已实现 |
+| O5 | pred candidate 策略 | **已定稿 (M6+M7)**：M7 在 TRACK 稳定 3 周期后注入 pred seed；M6 读取 seed 生成 pred candidate | ~~M6 前~~ 已实现 |
+| O6 | MAC 算法选择 | **已定稿 (M5)**：多输入 NLMS (3 轴动态 ACC 参考)，REST 旁路，发散检测+重置 | ~~M5 前~~ 已实现 |
+| O7 | HOLDOVER confidence 递减策略 | **已定稿 (M9)**：每周期 -10，最低 0，基于 prev_confidence | ~~M8 前~~ 已实现 |
 | O8 | 滤波器设计 | **已定稿 (M2)**：2 阶 IIR Butterworth (DF2T biquad)，block-stateless + DC warm-up | ~~M2 前~~ 已实现 |
-| O9 | ACC 运动分类指标 | 三轴能量 + 主频 + 周期性 | M4 前 |
-| O10 | 日志输出机制 | RAM ring buffer | 集成前 |
+| O9 | ACC 运动分类指标 | **已定稿 (M4)**：动态能量 + ACF 周期性 + 主频 (lag→Hz)，规则分类 | ~~M4 前~~ 已实现 |
+| O10 | 日志输出机制 | RAM ring buffer | **未实现**，结构已冻结，传输层待集成阶段 |
 | O11 | main_ch 切换迟滞 | **已定稿 (M3)**：switch_margin + switch_hold_count 参数化迟滞，已入 hr_params_t.sqi | ~~M3 前~~ 已实现 |
-| O12 | 融合策略 | 最高 score + 历史一致性 | M7 前 |
-| O13 | flags 位域分配 | 逐步分配 | 各模块实现时 |
-| O14 | 构建系统 | CMake | 首个模块前 |
+| O12 | 融合策略 | **已定稿 (M7)**：rank = W_SCORE * score + W_HIST * consistency，jump-limit + EMA 平滑 | ~~M7 前~~ 已实现 |
+| O13 | flags 位域分配 | **首版定稿 (M9)**：8 bit 已分配 (DATA_NOT_READY/MAC_BYPASSED/MAC_DIVERGED/NO_VALID_CANDIDATE/HOLDOVER_ACTIVE/REACQUIRE_ACTIVE/MAIN_CH_SWITCHED/SIGNAL_RECOVERED) | ~~各模块实现时~~ V1 已分配 |
+| O14 | 构建系统 | CMake | **未实现**，当前仅 tests/Makefile |
 
 ---
 

@@ -683,3 +683,12 @@ const hr_debug_frame_t *hr_algo_get_debug(const hr_algo_ctx_t *ctx)
     if (!ctx) return NULL;
     return &ctx->debug;
 }
+
+/* ================================================================== */
+/*  Public API: hr_algo_ctx_sizeof                                     */
+/* ================================================================== */
+
+size_t hr_algo_ctx_sizeof(void)
+{
+    return sizeof(struct hr_algo_ctx);
+}

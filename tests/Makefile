@@ -15,7 +15,7 @@ SRCS_ALL = $(SRCS_M1) $(SRCS_M2) $(SRCS_M3) $(SRCS_M4) $(SRCS_M5) $(SRCS_M6) $(S
 
 .PHONY: all clean run
 
-all: test_hr_sampling test_hr_preproc test_hr_sqi test_hr_motion test_hr_mac test_hr_candidate test_hr_fusion test_hr_statemachine test_hr_algo
+all: test_hr_sampling test_hr_preproc test_hr_sqi test_hr_motion test_hr_mac test_hr_candidate test_hr_fusion test_hr_statemachine test_hr_algo test_smoke_external
 
 test_hr_sampling: test_hr_sampling.c $(SRCS_M1) test_framework.h ../src/hr_sampling.h
 	$(CC) $(CFLAGS) $(INCLUDES) test_hr_sampling.c $(SRCS_M1) -o $@
@@ -46,7 +46,12 @@ test_hr_statemachine: test_hr_statemachine.c $(SRCS_M8) test_framework.h ../src/
 test_hr_algo: test_hr_algo.c $(SRCS_M9) $(SRCS_ALL) test_framework.h ../src/hr_algo_internal.h
 	$(CC) $(CFLAGS) $(INCLUDES) test_hr_algo.c $(SRCS_ALL) -lm -o $@
 
-run: test_hr_sampling test_hr_preproc test_hr_sqi test_hr_motion test_hr_mac test_hr_candidate test_hr_fusion test_hr_statemachine test_hr_algo
+# External smoke test: only -I../include, NOT -I../src
+# Links all src files but test itself only includes public headers.
+test_smoke_external: test_smoke_external.c $(SRCS_M9) $(SRCS_ALL) test_framework.h
+	$(CC) $(CFLAGS) -I../include test_smoke_external.c $(SRCS_M9) $(SRCS_ALL) -lm -o $@
+
+run: test_hr_sampling test_hr_preproc test_hr_sqi test_hr_motion test_hr_mac test_hr_candidate test_hr_fusion test_hr_statemachine test_hr_algo test_smoke_external
 	@echo ""
 	@./test_hr_sampling
 	@echo ""
@@ -65,6 +70,8 @@ run: test_hr_sampling test_hr_preproc test_hr_sqi test_hr_motion test_hr_mac tes
 	@./test_hr_statemachine
 	@echo ""
 	@./test_hr_algo
+	@echo ""
+	@./test_smoke_external
 
 clean:
-	rm -f test_hr_sampling test_hr_preproc test_hr_sqi test_hr_motion test_hr_mac test_hr_candidate test_hr_fusion test_hr_statemachine test_hr_algo
+	rm -f test_hr_sampling test_hr_preproc test_hr_sqi test_hr_motion test_hr_mac test_hr_candidate test_hr_fusion test_hr_statemachine test_hr_algo test_smoke_external
