@@ -23,6 +23,7 @@
 #include "hr_mac.h"
 #include "hr_candidate.h"
 #include "hr_fusion.h"
+#include "hr_statemachine.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,7 +47,7 @@ struct hr_algo_ctx {
     hr_mac_ctx_t        mac;        /* M5 */
     hr_candidate_ctx_t  candidate;  /* M6 */
     hr_fusion_ctx_t     fusion;     /* M7 */
-    /* M8 sub-context will be appended here by its module.           */
+    hr_sm_ctx_t         sm;         /* M8 */
 };
 
 #ifdef __cplusplus
