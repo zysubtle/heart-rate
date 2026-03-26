@@ -30,6 +30,23 @@ extern "C" {
 #endif
 
 /* ------------------------------------------------------------------ */
+/*  hr_main_ctx_t — M9 staging/runtime context                        */
+/*                                                                     */
+/*  Raw export buffers live here (not on the stack).                   */
+/*  process_count drives the V1 timestamp strategy.                    */
+/*  prev_confidence supports O7 HOLDOVER confidence decay.             */
+/*  prev_main_ch supports MAIN_CH_SWITCHED flag detection.             */
+/*  Internal to M9 only; NOT exposed to public API.                    */
+/* ------------------------------------------------------------------ */
+typedef struct {
+    acc_sample_t acc_raw[HR_WINDOW_SIZE];
+    ppg_sample_t ppg_raw[HR_WINDOW_SIZE];
+    uint32_t     process_count;
+    uint8_t      prev_confidence;
+    uint8_t      prev_main_ch;
+} hr_main_ctx_t;
+
+/* ------------------------------------------------------------------ */
 /*  hr_algo_ctx — full definition  [Medium Freeze: internal layout]    */
 /* ------------------------------------------------------------------ */
 struct hr_algo_ctx {
@@ -48,6 +65,7 @@ struct hr_algo_ctx {
     hr_candidate_ctx_t  candidate;  /* M6 */
     hr_fusion_ctx_t     fusion;     /* M7 */
     hr_sm_ctx_t         sm;         /* M8 */
+    hr_main_ctx_t       main;       /* M9 staging/runtime */
 };
 
 #ifdef __cplusplus
