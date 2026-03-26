@@ -21,6 +21,7 @@
 #include "hr_sqi.h"
 #include "hr_motion.h"
 #include "hr_mac.h"
+#include "hr_candidate.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,7 +43,8 @@ struct hr_algo_ctx {
     hr_sqi_ctx_t        sqi;        /* M3 */
     hr_motion_ctx_t     motion;     /* M4 */
     hr_mac_ctx_t        mac;        /* M5 */
-    /* M6-M8 sub-contexts will be appended here by their modules.    */
+    hr_candidate_ctx_t  candidate;  /* M6 */
+    /* M7-M8 sub-contexts will be appended here by their modules.    */
 };
 
 #ifdef __cplusplus
